@@ -1,6 +1,7 @@
 from typing import List, Tuple
 import os
 import random
+from functools import reduce
 
 class Juego:
     def __init__(self, size: int):
@@ -54,12 +55,13 @@ class JuegoArchivo(Juego):
         with open(path_completo, "r") as file:
             dimensiones_inicio_fin = map(int, file.readline().split())
             filas, columnas, inicio_x, inicio_y = dimensiones_inicio_fin
-            contenido_mapa = file.read().strip()
+
+            contenido_mapa = reduce(lambda x, y: x + y, file.readlines()).strip()
 
         if columnas > 0:
-            mapa = [list(contenido_mapa[i:i + columnas]) for i in range(0, len(contenido_mapa), columnas)]
+            mapa = list(map(list, map(str.strip, contenido_mapa.split('\n'))))
             inicio = (inicio_x, inicio_y)
-            final = (columnas - 1, filas - 1)  # Establecer las coordenadas finales basándonos en las dimensiones del mapa
+            final = (columnas - 1, filas - 1)
             return mapa, inicio, final
         else:
             raise ValueError("El número de columnas debe ser mayor que cero.")
@@ -75,4 +77,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
